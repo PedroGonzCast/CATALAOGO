@@ -48,14 +48,16 @@ export async function GET(request: NextRequest) {
 
   let buffer: Buffer;
   try {
-    buffer = await renderToBuffer(
-      React.createElement(CatalogoPDF, {
-        products:       result.data,
-        sistemaId:      idSistema,
-        fecha,
-        categoriaNombre,
-      })
-    );
+    // renderToBuffer espera ReactElement<DocumentProps>; el cast es seguro porque
+    // CatalogoPDF renderiza un <Document> de react-pdf en su raíz.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const el = React.createElement(CatalogoPDF, {
+      products: result.data,
+      sistemaId: idSistema,
+      fecha,
+      categoriaNombre,
+    });
+    buffer = await (renderToBuffer as (e: unknown) => Promise<Buffer>)(el);
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Error al generar el PDF';
     console.error('[catalogo/pdf]', msg);
@@ -64,7 +66,8 @@ export async function GET(request: NextRequest) {
 
   const filename = `catalogo-${new Date().toISOString().slice(0, 10)}.pdf`;
 
-  return new NextResponse(buffer, {
+  // Uint8Array es compatible con BodyInit en el Response de Next.js
+  return new NextResponse(new Uint8Array(buffer), {
     headers: {
       'Content-Type':        'application/pdf',
       'Content-Disposition': `attachment; filename="${filename}"`,

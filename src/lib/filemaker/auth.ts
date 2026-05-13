@@ -1,4 +1,4 @@
-// import { buildLoginHeaders, sessionsPath } from './helpers';
+import { buildLoginHeaders, sessionsPath } from './helpers';
 import { FileMakerError } from './errors';
 
 // ─── Token Cache ──────────────────────────────────────────────────────────────

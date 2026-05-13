@@ -293,8 +293,8 @@ export const FileMakerService = {
     try {
       // Si hay idSistema, añadirlo como criterio AND en cada cláusula de la query
       const criteria = options.idSistema
-        ? query.query.map((q) => ({ ...q, idSistema: options.idSistema! }))
-        : query.query;
+        ? (query.query ?? []).map((q) => ({ ...q, idSistema: options.idSistema! }))
+        : (query.query ?? []);
 
       const body: FMQuery = {
         ...query,

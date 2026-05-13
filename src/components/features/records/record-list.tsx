@@ -42,8 +42,8 @@ export function RecordList() {
     search(searchInput);
   }
 
-  async function handleCreate(payload: CreateRecordPayload): Promise<boolean> {
-    const ok = await createRecord(payload);
+  async function handleCreate(payload: CreateRecordPayload | Partial<import('@/types/domain/record').RecordFields>): Promise<boolean> {
+    const ok = await createRecord(payload as CreateRecordPayload);
     if (ok) {
       toast.success('Registro creado exitosamente');
       setIsCreateOpen(false);
