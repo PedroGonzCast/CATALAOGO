@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\sebas\\\\Documents\\\\PRUEBA_FM\\\\\" -Filter \"tailwind.config.*\" -File)",
+      "Bash(npm install *)"
+    ]
+  }
+}
