@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { cn } from '@/lib/utils/cn';
 
 export default function LoginPage() {
@@ -25,17 +26,24 @@ export default function LoginPage() {
         body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
       });
 
-      const json = (await res.json()) as { ok: boolean; error?: string };
+      // Parsear JSON de forma segura — el servidor puede devolver HTML en caso de error 500
+      let json: { ok: boolean; error?: string };
+      try {
+        json = (await res.json()) as { ok: boolean; error?: string };
+      } catch {
+        setError(`Error del servidor (${res.status}). Revisa los logs del servidor.`);
+        return;
+      }
 
       if (!json.ok) {
-        setError(json.error ?? 'Error al iniciar sesión');
+        setError(json.error ?? 'Credenciales incorrectas');
         return;
       }
 
       router.push('/dashboard');
       router.refresh();
     } catch {
-      setError('Error de red. Verifica tu conexión.');
+      setError('No se pudo conectar con el servidor. Verifica tu conexión.');
     } finally {
       setIsLoading(false);
     }
@@ -156,8 +164,15 @@ export default function LoginPage() {
         </form>
       </div>
 
-      <p className="mt-6 text-center text-xs text-zinc-400 dark:text-zinc-600">
-        FileMaker Data API · Sistema de gestión
+      <p className="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
+        ¿No tienes cuenta?{' '}
+        <Link href="/register" className="font-medium text-zinc-900 hover:underline dark:text-zinc-100">
+          Regístrate
+        </Link>
+      </p>
+
+      <p className="mt-3 text-center text-xs text-zinc-400 dark:text-zinc-600">
+        FM Productos · Sistema de gestión
       </p>
     </div>
   );

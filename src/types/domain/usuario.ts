@@ -1,21 +1,11 @@
-// Campos del layout Usuarios en FileMaker
-export interface UsuarioFields {
-  id?: string;
-  email: string;
-  password: string;  // bcrypt hash almacenado en FM
-  idSistema: string;
-}
-
-// Lo que se guarda en la sesión cifrada
+/**
+ * Sesión de usuario autenticado — devuelta por getSession().
+ * idSistema es el UUID generado por FileMaker en confSistema.
+ */
 export interface UsuarioSession {
-  recordId: string;
-  email: string;
-  idSistema: string;
-  id?: string;
-  isLoggedIn: boolean;
-}
-
-// Forma de la sesión completa de iron-session
-export interface AppSession {
-  user?: UsuarioSession;
+  id:         string; // Supabase auth.users.id (UUID)
+  email:      string;
+  idSistema:  string; // FK al tenant en FileMaker (confSistema.id)
+  empresa:    string;
+  isLoggedIn: true;
 }
